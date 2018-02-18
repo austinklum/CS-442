@@ -67,12 +67,23 @@ int main(int argc, char **argv) {
         //
         // code
         //
+        struct SymEntry * entry = EnterName(table,yytext);
+        if(entry->attr){
+        	sprintf(actionMessage," -- occurrence %d",entry->attr->cnt);
+        } else {
+        	struct Attributes * attr = malloc(sizeof(struct Attributes));
+        	attr->cnt = 0;
+        	attr->firstColumn = GetCurrentColumn() - yyleng;
+        	attr->firstLine = GetCurrentLine();
+        	entry->attr = attr;
+        	sprintf(actionMessage," -- new ident");
+        }
       } break;
       case INT_TOK: {
-        // code
+        intSum += atoi(yytext);
       } break;
       case FLOAT_TOK: {
-        // code
+        floatSum += atof(yytext);
       } break;
       case DUMP_TOK: {
         fprintf(stderr,"---------\n");
