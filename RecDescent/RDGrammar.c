@@ -51,54 +51,109 @@ bool Stmt()
 bool Decl()
 // <Decl>    :== <Type> <IDLst>              INT CHR
 {
-	return Type() + IDLst();
+	ENTER;
+	if(!Type()) return LEAVE_FAIL;
+	if(!IDLst()) return LEAVE_FAIL;
+	return LEAVE_SUCC;
 }
 
 bool Type()
 // <Type>    :== INT
 // <Type>    :== CHR
 {
-	case INT_TOK
-	case CHAR_TOK
-		return
+	ENTER;
+	switch (CurrentToken()) {
+		case INT_TOK:
+			if(!Match(INT_TOK)) return LEAVE_FAIL;
+			break;
+		case CHR_TOK:
+			if(!Match(CHR_TOK)) return LEAVE_FAIL;
+			break;
+		default:
+			ParseError("Unknown Type");
+			return LEAVE_FAIL;
+	}
+	return LEAVE_SUCC;
 }
 
 bool IDLst()
 // <IDLst>   :== Ident <MLst>
 {
+	ENTER;
+	if(!Match(IDENT_TOK)) return LEAVE_FAIL;
+	if(!MLst()) return LEAVE_FAIL;
+	return LEAVE_SUCC;
 }
 
 bool MLst()
 // <MLst>    :== , <IDLst>
 // <MLst>    :==
 {
+	ENTER;
+	switch(CurrentToken()){
+		case COMMA_TOK:
+			if(!Match(COMMA_TOK)) return LEAVE_FAIL;
+			if(!IDLst()) return LEAVE_FAIL;
+			break;
+		default:
+			ParseError("Unknown MLst");
+			return LEAVE_FAIL;
+	}
+
+	return LEAVE_SUCC;
+	//TODO I'm not quite sure about the blank RHS
+
 }
 
 bool Assign()
 // <Assign>  :==  <Ident> := <Expr>
 {
+	//TODO not sure about := being a single token or 2 tokens.
+	ENTER;
+	if(!Match(IDENT_TOK)) return LEAVE_FAIL;
+	if(!Match(':=')) return LEAVE_FAIL;
+	if(!Expr()) return LEAVE_FAIL;
+	return LEAVE_SUCC;
 }
 
 bool Expr()
 // <Expr>    :==  <Term> <MExpr>
 {
+	ENTER;
+	if(!Term()) return LEAVE_FAIL;
+	if(!MExpr()) return LEAVE_FAIL;
+	return LEAVE_SUCC;
 }
 
 bool MExpr()
 // <MExpr>   :==  <AddOp> <Term> <MExpr>
 // <MExpr>   :==
 {
+	ENTER;
+	if(!AddOp()) return LEAVE_FAIL;
+	if(!Term()) return LEAVE_FAIL;
+	if(!MExpr()) return LEAVE_FAIL;
+	return LEAVE_SUCC;
 }
 
 bool Term()
 //<Term>     :==  <Factor> <MTerm>
 {
+	ENTER;
+	if(!Factor()) return LEAVE_FAIL;
+	if(!MTerm()) return LEAVE_FAIL;
+	return LEAVE_SUCC;
 }
 
 bool MTerm()
 //<MTerm>    :==  <MultOp> <Factor> <MTerm>
 //<MTerm>    :==
 {
+	ENTER;
+	if(!MultOp()) return LEAVE_FAIL;
+	if(!Factor()) return LEAVE_FAIL;
+	if(!MTerm()) return LEAVE_FAIL;
+	return LEAVE_SUCC;
 }
 
 bool Factor()
