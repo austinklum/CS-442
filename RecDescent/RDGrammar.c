@@ -44,7 +44,7 @@ bool Stmt()
 // <Stmt>    :== <Assign>
 {
   ENTER;
-
+  	  //TODO I have two perfectly valid RHS. I can't use a switch on a token as these are functions.
   return LEAVE_SUCC;
 }
 
@@ -64,10 +64,7 @@ bool Type()
 	ENTER;
 	switch (CurrentToken()) {
 		case INT_TOK:
-			if(!Match(INT_TOK)) return LEAVE_FAIL;
-			break;
 		case CHR_TOK:
-			if(!Match(CHR_TOK)) return LEAVE_FAIL;
 			break;
 		default:
 			ParseError("Unknown Type");
@@ -92,11 +89,10 @@ bool MLst()
 	ENTER;
 	switch(CurrentToken()){
 		case COMMA_TOK:
-			if(!Match(COMMA_TOK)) return LEAVE_FAIL;
 			if(!IDLst()) return LEAVE_FAIL;
 			break;
 		default:
-			ParseError("Unknown MLst");
+			ParseError("Unknown MLst.");
 			return LEAVE_FAIL;
 	}
 
@@ -163,16 +159,54 @@ bool Factor()
 // <Factor>  :==  <FloatLit>
 // <Factor>  :==  <Ident>
 {
+	ENTER;
+	switch(CurrentToken()){
+		case LPAREN_TOK:
+			if(!Expr()) return LEAVE_FAIL;
+			if(!Match(RPAREN_TOK)) return LEAVE_FAIL;
+			break;
+		case MINUS_TOK:
+			if(!Factor()) return LEAVE_FAIL;
+			break;
+		case INTLIT_TOK:
+		case FLOATLIT_TOK:
+		case IDENT_TOK:
+			break;
+		default:
+			ParseError("Unknown Factor.");
+			return LEAVE_FAIL;
+	}
+	return LEAVE_SUCC;
 }
 
 bool AddOp()
 // <AddOp>    :==  -
 // <AddOp>    :==  +
 {
+	ENTER;
+	switch(CurrentToken()){
+		case MINUS_TOK:
+		case PLUS_TOK:
+			break;
+		default:
+			ParseError("Unknown AddOp.");
+			return LEAVE_FAIL;
+	}
+	return LEAVE_SUCC;
 }
 
 bool MultOp()
 // <MultOp>   :==  *
 // <MultOp>   :==  /
 {
+	ENTER;
+	switch(CurrentToken()){
+		case TIMES_TOK:
+		case DIV_TOK:
+			break;
+		default:
+			ParseError("Unknown MultOp.");
+			return LEAVE_FAIL;
+	}
+	return LEAVE_SUCC;
 }
