@@ -104,7 +104,7 @@ bool MLst()
 bool Assign()
 // <Assign>  :==  <Ident> := <Expr>
 {
-	//TODO not sure about := being a single token or 2 tokens.
+	//not sure about := being a single token or 2 tokens.
 	ENTER;
 	if(!Match(IDENT_TOK)) return LEAVE_FAIL;
 	if(!Match(':=')) return LEAVE_FAIL;
@@ -126,9 +126,15 @@ bool MExpr()
 // <MExpr>   :==
 {
 	ENTER;
-	if(!AddOp()) return LEAVE_FAIL;
-	if(!Term()) return LEAVE_FAIL;
-	if(!MExpr()) return LEAVE_FAIL;
+	switch (CurrentToken()){
+		case MINUS_TOK:
+		case PLUS_TOK:
+			if(!Term()) return LEAVE_FAIL;
+			if(!MExpr()) return LEAVE_FAIL;
+			break;
+		default:
+			if(!Match(SEMI_TOK) || !Match(RPAREN_TOK)) return LEAVE_FAIL;
+	}
 	return LEAVE_SUCC;
 }
 
