@@ -32,6 +32,29 @@ StmtSeq :                                                                       
 Assign  : LHS ASSIGN_TOK Expr                    { printf("%s =\n",(char *)$1); } ;
 LHS     : IDENT_TOK                               { $$ = (long) strdup(yytext); } ;
 
+Stmt    : Decl																	  ;
+Stmt	: Assign																  ;
+Decl	: Type IDLst															  ;
+Type	: INT_TOK																  ;
+Type	: CHR_TOK																  ;
+IDLst   : IDENT_TOK MLst														  ;
+MLst    : ',' IDLst;
+MLst    : ;
+Expr    : Term MExpr;
+MExpr   : AddOp Term MExpr;
+MExpr   : ;
+Term    : Factor MTerm;
+MTerm   : MultOp Factor MTerm;
+MTerm   : ;
+Factor  :  '(' Expr ')';
+Factor  :  '-' Factor;
+Factor  : INTLIT_TOK;
+Factor  : IDENT_TOK;
+AddOp   : '-';
+AddOp   : '+';
+MultOp  : '*';
+MultOp  : '/';
+.					         	
 %%
 
 void

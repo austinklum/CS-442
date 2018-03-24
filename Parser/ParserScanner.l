@@ -29,10 +29,25 @@ int lineComment = 0;
      where token-symbolic-name appears in yacc file.
    */
 
-int                             { if (!IN_COMMENT) RETURN(INT_TOK); }
 \;                              { if (!IN_COMMENT) RETURN(';'); }
-
 [\n]                            { lineComment = 0; }
 [ \t]                           { }
+int                 							{ if (!IN_COMMENT) RETURN(INT_TOK); }
+chr                 							{ if (!IN_COMMENT) RETURN(CHR_TOK); }
+":="											{ if (!IN_COMMENT) RETURN(ASSIGN_TOK); }
+"("        											{ if (!IN_COMMENT) RETURN('('); }
+")"								  					{ if (!IN_COMMENT) RETURN(')'); }
+"-"													{ if (!IN_COMMENT) RETURN('-'); }
+"+"													{ if (!IN_COMMENT) RETURN('+'); }
+"*"													{ if (!IN_COMMENT) RETURN('*'); }
+"/"													{ if (!IN_COMMENT) RETURN('/'); }
+"{"													{ if (!IN_COMMENT) RETURN('{'); }
+"}"													{ if (!IN_COMMENT) RETURN('}'); }
+","													{ if (!IN_COMMENT) RETURN(','); }
+-?{Digit}+     									{ if (!IN_COMMENT) RETURN(INTLIT_TOK); }
+{Letter}({Letter}|{Digit})*     				{ if (!IN_COMMENT) RETURN(IDENT_TOK); }
+\/\*														{ commentLevel++; }
+\*\/														{ commentLevel == 0 ? commentLevel = 0 : commentLevel--; }
+\/\/														{ lineComment = 1;}
 .                               { }
 %%
