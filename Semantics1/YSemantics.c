@@ -208,16 +208,40 @@ Finish() {
 
 void
 ProcDecls(struct IdList * idList, enum BaseTypes baseType) {
+
+/*	struct IdList item = malloc(sizeof(struct IdList));
+	struct IdList needToFree = item;
+	item->next = idList;*/
+	struct IdList item = idList;
   // walk IdList items
-    // switch for prim or func type
-      // names on IdList are only specified as PrimType or FuncType
-      // set type desc
-    // for Sem1 everthing is in global scope, otherwise check scope
-    // attr reference string is id name with prepended "_"
+	while((item = item->next)) {
+		struct Attr itemAttr = ((struct Attr)GetAttr(item->entry));
+	 // switch for prim or func type
+		switch(itemAttr->typeDesc->declType) {
+		  // names on IdList are only specified as PrimType or FuncType
+			case PrimType:
+				itemAttr->typeDesc->primDesc = baseType;
+				itemAttr->reference = strdup(strcat("_", GetName(item->entry)));
+				break;
+			case FuncType:
+			// set type desc
+			// attr reference string is id name with prepended "_"
+				itemAttr->typeDesc->funcDesc = baseType;
+				///malloc of proper size
+				///Append _ strcat entryname
+				itemAttr->reference = strdup(strcat("_", GetName(item->entry)));
+				break;
+		}
+		// for Sem1 everthing is in global scope, otherwise check scope
+	}
+	/*free(needToFree);*/
 }
 
 struct IdList *
 AppendIdList(struct IdList * item, struct IdList * list) {
+	item->next = list->next;
+	list->next = item;
+	return item;
 }
 
 struct IdList *
@@ -227,13 +251,32 @@ ProcName(char * id, enum DeclTypes type) {
   // create IdList node for entry
   // create and partially init type descriptor, completed in ProcDecls
   // create, init and set attr struct
+	struct SymEntry * entry = EnterName(IdentifierTable, id);
+		//If there is an attr then the entry must exist already. ERROR.
+	if(GetAttr(entry))
+		return NULL;
+
+	//New entry. init attribute of entry
+	struct Attr * attr = malloc(sizeof(struct Attr));
+	attr->typeDesc = type;
+	SetAttr(entry,-1,attr);
+
+	struct IdList * idList = malloc(sizeof(struct IdList));
+	idList->entry = entry;
+
+	return idList;
 }
 
 void
 ProcFunc(char * id, struct InstrSeq * instrs) {
   // lookup name
+	struct SymEntry * entry = LookupName(IdentifierTable, id);
   // get attr
+	struct Attr * attr = GetAttr(entry);
   // gen instr for function entry
+	struct InstrSeq * funcLabel = GenInstr(GenLabel(), "","","");
   // include function body code
+	instrs = AppendSeq(funcLabel,instrs);
   // function exit code, i.e. jump return
+	attr->typeDesc->funcDesc->funcCode = instrs;
 }
