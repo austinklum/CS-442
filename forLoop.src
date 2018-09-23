@@ -1,0 +1,16 @@
+decl main() : int;
+decl i : int;
+
+impl main() {
+  for (i = 1; i <= 10; i++) {
+    put(i);
+    put('\n');
+  };
+ put('\n');
+  for (i = 10; i > 0; i--) {
+    i--;
+    put(i);
+    put('\n'); 
+  };
+
+};

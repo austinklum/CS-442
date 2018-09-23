@@ -1,0 +1,31 @@
+decl main() : int;
+decl msg() : int;
+decl ret5() : int;
+decl i : int;
+
+impl main() {
+  msg();
+
+  for (i = ret5(); i <= 10; i++) {
+    put(i);
+    put('\n');
+  };
+
+  msg();
+
+  for (i = 10; i > 0; i--) {
+    i--;
+    put(i);
+    put('\n'); 
+  };
+  msg();
+};
+
+impl msg() {
+  put("\nvoid function was called!\n\n");
+}; 
+
+impl ret5() {
+  put("ret5 was called!\n");
+  return 5;
+};

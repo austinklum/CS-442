@@ -1,0 +1,10 @@
+decl main() : int;
+decl array[5] : int;
+decl i : int;
+
+impl main() {
+  i = 3;
+  array[1] = i;
+  put(i);
+};
+

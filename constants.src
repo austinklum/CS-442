@@ -1,0 +1,31 @@
+decl main() : int;
+decl ret6() : int;
+decl printJ() : int;
+decl i : int;
+cnst j : int = 3;
+
+impl main() {
+
+  i = 7;
+  j++;
+  printJ();
+  j = 5;
+  printJ();
+  j = ret6();
+  printJ();
+  j = i;
+  printJ();
+  i = j + 5;
+  put(i);
+  put(" = j + 5\n");
+};
+
+impl ret6(){
+  return 6;
+};
+
+impl printJ(){
+  put("j = ");
+  put(j);
+  put('\n');
+};

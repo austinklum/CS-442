@@ -1,0 +1,9 @@
+//decl main() : int;
+decl main() : int;
+decl arr[5] : int;
+//decl i : int;
+
+impl main() {
+ 
+};
+
